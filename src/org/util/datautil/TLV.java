@@ -90,7 +90,7 @@ public final class TLV {
 		sb.append("\r\n").append(separator).append("\r\n");
 		map.forEach((key, value) -> {
 			if (value.length() > 51 && toggle.get()) sb.append("\r\n");
-			sb.append("| ").append(key).append(" : ").append(String.format("%-51s", value));
+			sb.append("| ").append(key).append(" : '").append(value).append("'").append(String.format("%-"+(51-value.length())+"s", ""));
 			if (toggle.get()) sb.append("|\r\n");
 			toggle.toggle();
 		});
@@ -100,13 +100,7 @@ public final class TLV {
 	}
 
 	public static void main(String[] args) {
-		TLV tlv = new TLV();
-		tlv.put("001", "A");
-		tlv.put("002", "B");
-		tlv.put("003", "C");
-		tlv.put("004", "D");
+		TLV tlv = TLV.parse("00100248002003MOB045020NATEKAR MILIND ANANT04900300005001785360029673992547051005test4056003MOB059011SRCB0000379062015379203100000101");
 		System.out.println(tlv);
-		System.out.println(tlv);
-
 	}
 }
