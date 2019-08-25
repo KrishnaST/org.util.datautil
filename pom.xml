@@ -5,11 +5,35 @@
 	<groupId>org.util</groupId>
 	<artifactId>datautil</artifactId>
 	<version>1.0.0</version>
-	
+
 	<properties>
 		<maven.compiler.source>12</maven.compiler.source>
 		<maven.compiler.target>12</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<jackson.core.version>2.9.9</jackson.core.version>
+		<jackson.version>2.9.9.3</jackson.version>
 	</properties>
-	
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.core.version}</version>
+		</dependency>
+
+	</dependencies>
+
 </project>
