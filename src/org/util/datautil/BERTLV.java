@@ -16,41 +16,33 @@ public final class BERTLV {
 		map = new TreeMap<>();
 	}
 
-	public BERTLV(boolean sort) {
+	public BERTLV(final boolean sort) {
 		if (sort) map = new TreeMap<>();
 		else map = new LinkedHashMap<>();
 	}
 
-	public final void put(String tag, String value) {
-		map.put(tag, value);
+	public final void put(final String t, final String v) {
+		if (t == null || v == null) return;
+		map.put(t, v);
 	}
 
-	public final void put(byte[] tag, byte[] value) {
-		map.put(ByteHexUtil.byteToHex(tag), ByteHexUtil.byteToHex(value));
+	public final void put(final byte[] t, final byte[] v) {
+		if (t == null || v == null) return;
+		map.put(ByteHexUtil.byteToHex(t), ByteHexUtil.byteToHex(v));
 	}
 
-	public final String get(String tag) {
-		return map.get(tag);
+	public final String get(final String t) {
+		if (t == null) return null;
+		return map.get(t);
 	}
 
-	public final byte[] getBytes(String tag) {
-		return ByteHexUtil.hexToByte(map.get(tag));
-	}
-
-	public final BERTLV keepAll(List<String> tags) {
-		final Map<String, String> newmap = new HashMap<>();
-		tags.forEach(tag -> { if (map.get(tag) != null) newmap.put(tag, map.get(tag)); });
-		map.clear();
-		map.putAll(newmap);
-		return this;
-	}
-
-	public final BERTLV removeAll(List<String> tags) {
-		tags.forEach(tag -> map.remove(tag));
-		return this;
+	public final byte[] getBytes(final String t) {
+		if (t == null) return null;
+		return ByteHexUtil.hexToByte(map.get(t));
 	}
 
 	public final String pack() {
+		if(map.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();
 		map.forEach((k, v) -> {
 			sb.append(k);
@@ -58,8 +50,10 @@ public final class BERTLV {
 			if (len <= 0x7F) sb.append(ByteHexUtil.byteToHex((byte) len));
 			else if (len <= 0xFF) sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x81, (byte) len }));
 			else if (len <= 0xFFFF) sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x82, (byte) (len / 0x100), (byte) (len % 0x100) }));
-			else if (len <= 0xFFFFFF) sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x83, (byte) (len / 0x10000), (byte) (len % 0x10000 / 0x100), (byte) (len % 0x100) }));
-			else if (len <= 0xFFFFFFFF) sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x84, (byte) (len / 0x10000), (byte) (len % 0x10000 / 0x100), (byte) (len % 0x100) }));
+			else if (len <= 0xFFFFFF)
+				sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x83, (byte) (len / 0x10000), (byte) (len % 0x10000 / 0x100), (byte) (len % 0x100) }));
+			else if (len <= 0xFFFFFFFF)
+				sb.append(ByteHexUtil.byteToHex(new byte[] { (byte) 0x84, (byte) (len / 0x10000), (byte) (len % 0x10000 / 0x100), (byte) (len % 0x100) }));
 			sb.append(v);
 		});
 		return sb.toString();
@@ -67,6 +61,7 @@ public final class BERTLV {
 
 	@Override
 	public final String toString() {
+		if(map.isEmpty()) return "";
 		final Toggle        toggle = new Toggle(false);
 		final StringBuilder sb     = new StringBuilder(30);
 		sb.append("\r\n").append(separator).append("\r\n");
@@ -127,6 +122,30 @@ public final class BERTLV {
 		}
 		return len;
 	}
+
+	public final BERTLV keepAll(List<String> tags) {
+		final Map<String, String> newmap = new HashMap<>();
+		tags.forEach(tag -> { if (map.get(tag) != null) newmap.put(tag, map.get(tag)); });
+		map.clear();
+		map.putAll(newmap);
+		return this;
+	}
+
+	public final BERTLV removeAll(final List<String> tags) {
+		tags.forEach(tag -> map.remove(tag));
+		return this;
+	}
+
+	public final BERTLV cleanup() {
+		final Map<String, String> newmap = new HashMap<>();
+		map.forEach((t,v) -> {
+			if(t !=null && v != null && t.length() > 0 && v.length() > 0) newmap.put(t, v);
+		});
+		map.clear();
+		map.putAll(newmap);
+		return this;
+	}
+
 
 	public static void main(String[] args) {
 		BERTLV bertlv = parse(
