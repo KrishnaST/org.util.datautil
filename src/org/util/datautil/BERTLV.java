@@ -1,9 +1,9 @@
 package org.util.datautil;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -42,7 +42,7 @@ public final class BERTLV {
 	}
 
 	public final String pack() {
-		if(map.isEmpty()) return "";
+		if (map.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();
 		map.forEach((k, v) -> {
 			sb.append(k);
@@ -61,7 +61,7 @@ public final class BERTLV {
 
 	@Override
 	public final String toString() {
-		if(map.isEmpty()) return "";
+		if (map.isEmpty()) return "";
 		final Toggle        toggle = new Toggle(false);
 		final StringBuilder sb     = new StringBuilder(30);
 		sb.append("\r\n").append(separator).append("\r\n");
@@ -113,7 +113,7 @@ public final class BERTLV {
 		return parse(ByteHexUtil.hexToByte(string));
 	}
 
-	private static final int getLen(byte... bytes) {
+	private static final int getLen(final byte... bytes) {
 		int len      = 0;
 		int exponent = 1;
 		for (int i = (bytes.length - 1); i >= 0; i--) {
@@ -123,7 +123,7 @@ public final class BERTLV {
 		return len;
 	}
 
-	public final BERTLV keepAll(List<String> tags) {
+	public final BERTLV keepAll(final Collection<String> tags) {
 		final Map<String, String> newmap = new HashMap<>();
 		tags.forEach(tag -> { if (map.get(tag) != null) newmap.put(tag, map.get(tag)); });
 		map.clear();
@@ -131,25 +131,36 @@ public final class BERTLV {
 		return this;
 	}
 
-	public final BERTLV removeAll(final List<String> tags) {
+	public final BERTLV removeAll(final Collection<String> tags) {
 		tags.forEach(tag -> map.remove(tag));
 		return this;
 	}
 
 	public final BERTLV cleanup() {
 		final Map<String, String> newmap = new HashMap<>();
-		map.forEach((t,v) -> {
-			if(t !=null && v != null && t.length() > 0 && v.length() > 0) newmap.put(t, v);
-		});
+		map.forEach((t, v) -> { if (t != null && v != null && t.length() > 0 && v.length() > 0) newmap.put(t, v); });
 		map.clear();
 		map.putAll(newmap);
 		return this;
 	}
 
+	public final BERTLV keepAllCleanup(final Collection<String> tags) {
+		final Map<String, String> newmap = new HashMap<>();
+		tags.stream().map(t -> new Pair<String, String>(t, map.get(t)))
+				.filter(p -> p.getLeft() != null && p.getRight() != null && p.getLeft().length() > 0 && p.getRight().length() > 0)
+				.forEach(p -> newmap.put(p.getLeft(), p.getRight()));
+		map.clear();
+		map.putAll(newmap);
+		return this;
+	}
 
 	public static void main(String[] args) {
-		BERTLV bertlv = parse(
-				"9F1A0203569F360200195F3401019F37049A7E15BE9F34031F00029F3501119F1E0830303030303132339F330360E8C85F2A020356950580000080009F2701809A031908239F2608B0A47F7166EE62239F090200019F4104000001739F0206000000100201820218009F0607A00000015230108407A00000015230109C01009B0268009F03060000000000009F10080105A00003400000");
-		System.out.println(bertlv);
+		BERTLV oringinal = parse(
+				"9F1A0203569F360200405F3401019F3704F9B169019F34034203009F3501119F1E009F33036040005F2A020356950580000480009F2701809A031908289F2608677150E5F6714AED9F090200649F4104000000699F0206000000300000820258009F0607A00000052410108407A00000052410104F07A00000052410109C01019B0268009F03060000000000009F10080105A00000000000");
+
+		BERTLV changed = parse(
+				"4F07A00000052410105F2A020356820258008407A0000005241010950580000480009A031908289C01019F02060000003000009F03060000000000009F0607A00000052410109F090200649F1A0203569F2608677150E5F6714AED9F2701809F33036040009F34034203009F3501119F360200409F3704F9B169019F410400000069");
+		System.out.println(oringinal);
+		System.out.println(changed);
 	}
 }

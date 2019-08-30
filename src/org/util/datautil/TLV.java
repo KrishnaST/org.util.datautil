@@ -1,8 +1,8 @@
 package org.util.datautil;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,30 +16,30 @@ public final class TLV {
 		map = new TreeMap<>();
 	}
 
-	public TLV(boolean sort) {
+	public TLV(final boolean sort) {
 		if (sort) map = new TreeMap<>();
 		else map = new LinkedHashMap<>();
 	}
 
-	public final TLV put(String key, String value) {
-		map.put(key, value);
+	public final TLV put(final String k, final String v) {
+		map.put(k, v);
 		return this;
 	}
 
-	public final String get(String key) {
-		return map.get(key);
+	public final String get(String k) {
+		return map.get(k);
 	}
 
-	public final TLV remove(String key) {
-		map.remove(key);
+	public final TLV remove(String k) {
+		map.remove(k);
 		return this;
 	}
 
-	public final String removeGet(String key) {
-		return map.remove(key);
+	public final String removeGet(String k) {
+		return map.remove(k);
 	}
 
-	public final TLV keepAll(List<String> tags) {
+	public final TLV keepAll(final Collection<String> tags) {
 		final Map<String, String> newmap = new HashMap<>();
 		tags.forEach(tag -> { if (map.get(tag) != null) newmap.put(tag, map.get(tag)); });
 		map.clear();
@@ -47,12 +47,12 @@ public final class TLV {
 		return this;
 	}
 
-	public final TLV removeAll(List<String> tags) {
+	public final TLV removeAll(final Collection<String> tags) {
 		tags.forEach(tag -> map.remove(tag));
 		return this;
 	}
 
-	public static final TLV parse(String tlvString) {
+	public static final TLV parse(final String tlvString) {
 		TLV tlv = new TLV();
 		if (tlvString == null) return tlv;
 		int i = 0;
