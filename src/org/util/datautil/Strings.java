@@ -2,6 +2,16 @@ package org.util.datautil;
 
 public class Strings {
 
+	public static final String trimSpecial(final String s) {
+		if(s == null) return "**null**";
+		return s.strip();
+	}
+	
+	public static final String trim(final String s) {
+		if(s == null) return "";
+		return s.strip();
+	}
+	
 	public static final boolean isNullOrEmpty(final String s) {
 		return s == null || s.trim().length() == 0;
 	}

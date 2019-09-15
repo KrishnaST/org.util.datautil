@@ -6,8 +6,8 @@ public class ThalesKey {
 	public static final String toThalesKey(final String key) {
 		if(key == null) return null;
 		final int len = key.trim().length();
-		if(len == 32) return "U"+key;
-		if(len == 48) return "T"+key;
+		if(len == 32) return "U"+key.trim();
+		if(len == 48) return "T"+key.trim();
 		return key;
 	}
 	
