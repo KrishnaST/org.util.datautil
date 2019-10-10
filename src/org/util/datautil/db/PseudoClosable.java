@@ -39,7 +39,11 @@ public final class PseudoClosable {
 	
 	public static final AutoCloseable getClosable(final PreparedStatement ps, final Object...objects) throws SQLException {
 		for (int i = 0; i < objects.length; i++) {
-			if(objects[i] instanceof Integer) {
+			
+			if(objects[i] == null) {
+				ps.setString(i+1, null);
+			}
+			else if(objects[i] instanceof Integer) {
 				ps.setInt(i+1, (int) objects[i]);
 			}
 			else if(objects[i] instanceof Long) {

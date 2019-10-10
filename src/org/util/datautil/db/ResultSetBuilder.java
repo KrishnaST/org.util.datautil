@@ -37,6 +37,18 @@ public class ResultSetBuilder {
 		return ps.executeQuery();
 	}
 	
+	public static final ResultSet getResultSet(final PreparedStatement ps, final byte[] bytes) throws SQLException {
+		ps.setBytes(1, bytes);
+		return ps.executeQuery();
+	}
+	
+	public static final ResultSet getResultSet(final PreparedStatement ps, final String string, final byte[] bytes) throws SQLException {
+		ps.setString(1, string);
+		ps.setBytes(2, bytes);
+		return ps.executeQuery();
+	}
+	
+	
 	public static final ResultSet getResultSet(final PreparedStatement ps, final Object...objects) throws SQLException {
 		for (int i = 0; i < objects.length; i++) {
 			if(objects[i] instanceof Integer) {
