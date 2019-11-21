@@ -1,4 +1,4 @@
-package org.util.datautil.db;
+package org.util.datautil.sql;
 
 import java.io.IOException;
 import java.math.BigDecimal;
